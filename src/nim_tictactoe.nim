@@ -44,6 +44,9 @@ proc emptySpots(this:Board):seq[int] =
 type 
   Move = tuple[score:int, idx:int]
 
+proc `<`(a,b: Move): bool =
+  return a.score < b.score
+
 type
   Game = ref object of RootObj
     currentPlayer*: string
@@ -94,23 +97,23 @@ proc getBestMove(this: Game, board: Board, player:string): Move =
             moves.add(move)
         
         if player == this.aiPlayer:
-          
-          var bestScore = -1000
-          var bestMove: Move 
-          for m in moves:
-            if m.score > bestScore:
-              bestMove = m
-              bestScore = m.score
-          return bestMove
+          return max(moves)          
+          # var bestScore = -1000
+          # var bestMove: Move 
+          # for m in moves:
+          #   if m.score > bestScore:
+          #     bestMove = m
+          #     bestScore = m.score
+          # return bestMove
         else:
-          
-          var bestScore = 1000
-          var bestMove: Move 
-          for m in moves:
-            if m.score < bestScore:
-              bestMove = m
-              bestScore = m.score
-          return bestMove
+          return min(moves)          
+          # var bestScore = 1000
+          # var bestMove: Move 
+          # for m in moves:
+          #   if m.score < bestScore:
+          #     bestMove = m
+          #     bestScore = m.score
+          # return bestMove
 
 proc startGame*(this:Game): void=
     while true:
@@ -134,11 +137,12 @@ proc startGame*(this:Game): void=
         let (done, winner) = this.board.done()
 
         if done == true:
-            if winner == "tie":
-                echo("TIE")
-            else:
-                echo("WINNER IS :", winner )
-            break           
+          echo this.board
+          if winner == "tie":
+              echo("TIE")
+          else:
+              echo("WINNER IS :", winner )
+          break           
 
 
 proc writeHelp() = 
